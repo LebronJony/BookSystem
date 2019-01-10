@@ -1,0 +1,60 @@
+DROP DATABASE booksystem;
+
+CREATE DATABASE booksystem;
+
+USE booksystem;
+
+CREATE TABLE IF NOT EXISTS `admin`(
+	`aid` VARCHAR(50) NOT NULL COMMENT '管理员编号',
+	`password` VARCHAR(32) COMMENT '管理员密码',
+	`lastdate` DATETIME COMMENT '最后一次登录日期',
+	`flag` INT COMMENT '标记',
+	`status` INT COMMENT '状态',
+  CONSTRAINT `pk_aid` PRIMARY KEY (`aid`)
+	)ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT '管理员表';
+
+CREATE TABLE IF NOT EXISTS `member`(
+	`mid` VARCHAR(50) NOT NULL COMMENT '用户编号',
+	`name` VARCHAR(50) COMMENT '用户姓名',
+	`age` INT COMMENT '年龄',
+	`sex` INT COMMENT '性别',
+	`phone` VARCHAR(32) COMMENT '电话',
+	CONSTRAINT `pk_mid` PRIMARY KEY (`mid`)
+	)ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT '用户表';
+
+CREATE TABLE IF NOT EXISTS `item`(
+	`iid` INT AUTO_INCREMENT NOT NULL COMMENT '类别编号',
+	`name` VARCHAR(100) COMMENT '类别名称',
+	`note` TEXT COMMENT '备注',
+	CONSTRAINT `pk_iid` PRIMARY KEY (`iid`)
+	)ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT '类别表';
+
+CREATE TABLE IF NOT EXISTS `books`(
+	`bid` INT AUTO_INCREMENT NOT NULL COMMENT '图书编号',
+	`iid` INT COMMENT '类别编号',
+	`aid` VARCHAR(50) COMMENT '管理员编号',
+	`name` VARCHAR(100) COMMENT '类别名称',
+	`credate` DATETIME COMMENT '上架日期',
+	`status` INT COMMENT '状态',
+	`note` TEXT COMMENT '备注',
+	CONSTRAINT `pk_bid` PRIMARY KEY (`bid`),
+	CONSTRAINT `fk_iid` FOREIGN KEY (`iid`) REFERENCES `item`(`iid`) ON DELETE CASCADE,
+	CONSTRAINT `fk_aid` FOREIGN KEY (`aid`) REFERENCES `admin`(`aid`) ON DELETE CASCADE
+	)ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT '图书详情表';
+
+CREATE TABLE IF NOT EXISTS `lenbooks`(
+	`leid` INT AUTO_INCREMENT NOT NULL COMMENT '借书编号',
+	`bid` INT COMMENT '图书编号',
+	`mid` VARCHAR(50) COMMENT '用户编号',
+	`credate` DATETIME COMMENT '上架日期',
+	`retdate` DATETIME COMMENT '归还日期',
+	CONSTRAINT `pk_leid` PRIMARY KEY (`leid`),
+	CONSTRAINT `fk_bid` FOREIGN KEY (`bid`) REFERENCES `books`(`bid`) ON DELETE CASCADE,
+	CONSTRAINT `fk_mid` FOREIGN KEY (`mid`) REFERENCES `member`(`mid`) ON DELETE CASCADE
+	)ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT '借书表';
+
+
+INSERT INTO admin(aid,password,flag,status)VALUES ('admin','BE6BCFC7C2E2263ED886F1349FCB7BAA',1,1);
+
+
+COMMIT;
